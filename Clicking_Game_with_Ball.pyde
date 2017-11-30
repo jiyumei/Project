@@ -1,60 +1,86 @@
-#draw an ellipse in random location  
-#store location in a variable (PVector is optional)
-#using the mousePressed() function (outside of draw() function), when user clicks
-#assign new location for ball
-#in that same function, add one to a score variable 
-#display score using text() function
+"""
+Create a 2-player clicking game.
+1. Draw an ellipse at a random location on the screen. Be sure to
+   store the location info in x/y position variables (or PVector?)
+2. Define a mousePressed() function. When the user clicks,
+   assign a new location to the ball.
+3. Create a score variable. When the user clicks (same function above,
+   add +1 to the score.
+4. Display the score using the text() function.
+5. Now, when the user clicks, use the mouseX and mouseY variables, within the
+   previously defined mousePressed() function, compare those values to the 
+   location of the ellipse. 
+   If the mouse location is within a certain range, then you add to the 
+   score and change the ellipse location.
+6. Split the board visually in the middle. One side will be for player 1, the
+   other for player2. Each will have their own ball to click...
+7. Add a second ball, with its own position variable, and its own score, and
+   its own click detection in the already defined mousePressed() function.
+8. If a player reaches a score of 10, they win. Code this.
+"""
+ballSize = 50
 
-ballX = 30
-ballY = 30
-score = 0
+ballX1 = 50
+ballY1 = 50
+score1 = 0
+
+ballX2 = 750
+ballY2 = 50
+score2 = 0
 
 def setup():
-    size(400, 400)
+    size(800, 400)
     
 def draw():
-    #background
-    background(255)
-    beginning = color(5, 5, 99)
-    ending = color(5, 201, 187)
+    #Background (Player One)
+    background(255, 175, 136)
+    #Background (Player Two)
+    fill(84, 3, 4)
+    noStroke()
+    rect(400, 0, 400, 400)
     
-    for i in range(401):
-        stroke(lerpColor(beginning, ending, i/500.0))
-        line(0, i, width, i)
-    
-    #Ball
-    global ballX 
-    global ballY
+    #Ball (Player One)
+    global ballX1 
+    global ballY1
+    global ballSize
     
     fill(0)
-    stroke(255)
-    ellipse(ballX, ballY, 30, 30)
+    stroke(255, 252, 192)
+    ellipse(ballX1, ballY1, ballSize, ballSize)
+    
+    Ball (Player Two)
+    global ballX2
+    global ballY2
+    
+    stroke(43, 20, 3)
+    fill(255, 252, 192)
+    ellipse(ballX2, ballY2, ballSize, ballSize)
     
     #Score
-    global score
+    global score1
     
     textSize(20)
     fill(201, 248, 247)
-    text("score:", 10, 25)
-    text(score, 72, 25)
+    text(score1, 20, 30)
     
 def mousePressed():
-#Now, when the user clicks, use the mouseX and mouseY variables, within the
-   #mousePressed() function, compare those values to the location of the ellipse. 
-   #If the mouse location is within a certain range, then you add to the 
-   #score and change the ellipse location.
-#add a second ball, with its own position variable, and its own score, and
-   #its own click detection in the mousePressed() function.
-#if a player reaches a score of 10, they win. Code this
 
-    global ballX
-    global ballY
+    global ballX1
+    global ballY1
+    global ballSize
+    global score1
     
-    ballX = random(30, 390)
-    ballY = random(30, 390)
+    #Click Detection 
+    radius = ballSize / 2.0
     
-    if mouseX == ballX:
-        score += 1
+    distanceX1 = abs(mouseX - ballX1)
+    distanceY1 = abs(mouseY - ballY1)
+    hypotenuse = sqrt(distanceX1 ** 2 + distanceY1 ** 2) 
+    if hypotenuse <= radius:
+        ballX1 = random(10, 390)
+        ballY1 = random(10, 390)
+        score1 += 1
+    
         
     
 
@@ -65,12 +91,4 @@ def mousePressed():
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
+     
