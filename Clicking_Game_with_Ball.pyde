@@ -1,23 +1,6 @@
 """
-Create a 2-player clicking game.
-1. Draw an ellipse at a random location on the screen. Be sure to
-   store the location info in x/y position variables (or PVector?)
-2. Define a mousePressed() function. When the user clicks,
-   assign a new location to the ball.
-3. Create a score variable. When the user clicks (same function above,
-   add +1 to the score.
-4. Display the score using the text() function.
-5. Now, when the user clicks, use the mouseX and mouseY variables, within the
-   previously defined mousePressed() function, compare those values to the 
-   location of the ellipse. 
-   If the mouse location is within a certain range, then you add to the 
-   score and change the ellipse location.
-6. Split the board visually in the middle. One side will be for player 1, the
-   other for player2. Each will have their own ball to click...
-7. Add a second ball, with its own position variable, and its own score, and
-   its own click detection in the already defined mousePressed() function.
-8. If a player reaches a score of 10, they win. Code this.
-"""
+#Ball Game! - Fiona Lin
+
 ballSize = 50
 
 ballX1 = 50
@@ -48,7 +31,7 @@ def draw():
     stroke(255, 252, 192)
     ellipse(ballX1, ballY1, ballSize, ballSize)
     
-    Ball (Player Two)
+    #Ball (Player Two)
     global ballX2
     global ballY2
     
@@ -58,11 +41,23 @@ def draw():
     
     #Score
     global score1
+    global score2
     
     textSize(20)
     fill(201, 248, 247)
     text(score1, 20, 30)
+    text(score2, 420, 30)
     
+    #Winner
+    if score1 == 10:
+        textSize(40)
+        fill(255)
+        text("Winner!!!", 200, 200)
+    elif score2 == 10:
+        textSize(40)
+        fill(255)
+        text("Winner!!!", 600, 200)
+        
 def mousePressed():
 
     global ballX1
@@ -70,7 +65,11 @@ def mousePressed():
     global ballSize
     global score1
     
-    #Click Detection 
+    global ballX2
+    global ballY2
+    global score2
+    
+    #Click Detection (Player One) 
     radius = ballSize / 2.0
     
     distanceX1 = abs(mouseX - ballX1)
@@ -80,15 +79,12 @@ def mousePressed():
         ballX1 = random(10, 390)
         ballY1 = random(10, 390)
         score1 += 1
+    #Click Detection (Player Two)
     
-        
-    
-
-    
-    
-        
-        
-        
-        
-        
-     
+    distanceX2 = abs(mouseX - ballX2)
+    distanceY2 = abs(mouseY - ballY2)
+    hypotenuse2 = sqrt(distanceX2 ** 2 + distanceY2 ** 2) 
+    if hypotenuse2 <= radius:
+        ballX2 = random(400, 800)
+        ballY2 = random(200, 400)
+        score2 += 1
