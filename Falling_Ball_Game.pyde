@@ -39,7 +39,8 @@ ballX = 30
 ballY = 20
 ballSize = 30
 speedX = 0
-speedY = 3
+speedY = 5
+score = 0
 
 def setup():
     size(400, 600)
@@ -65,7 +66,38 @@ def draw():
 
     # Ball Falling
     global speedY
+    global score
     ballY += speedY
     
-    if ballY == 580:
+    if ballY > height:
+        ballY = 0
+        ballX = random(0, 380)
+        score += 1
+    
+    #The Player
+    ballY2 = 570
+    ballX2 = mouseX
+    
+    noStroke()
+    fill(252, 230, 112)
+    ellipse(ballX2, ballY2, ballSize, ballSize)
+    
+    #Score
+    textSize(30)
+    fill(255)
+    text(score, 20, 50)
+    
+    #Detection
+    radius = ballSize/2
+    
+    distanceX = (ballX - ballX2)
+    distanceY = (ballY - ballY2)
+    hyp = sqrt(distanceX ** 2 + distanceY ** 2) 
+    if hyp <= radius:
+        score = 0 - 1
         
+    #Score Text
+    if score >= 10:
+        textSize(30)
+        fill(255)
+        text("Congrats! You won!", 50, 200)
