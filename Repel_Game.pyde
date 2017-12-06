@@ -1,74 +1,54 @@
-#PVectors
-ballSize = 50
-speed = PVector(3, 6) 
-posNon = PVector(50, 50) #position for non player ellipse 
+ball_size = 50
+
+non_speed_1 = PVector(3, 6)
+non_speed_2 = PVector(6, 4)
+
+non_pos_1 = PVector(random(0, 700))
+player_pos = PVector(0,0)
+
 score = 0
 
 def setup():
-    size(600, 600)
-    frameRate(60)
+    size(700, 700)
     
 def draw():
-  background(255)
-  
-  #player ellipse
-  global ballSize
-  posPlayer = PVector(mouseX, mouseY)
-  
-  #Detection of Non Player Sprite
-  radius = ballSize/2 
-  
-  noFill()
-  stroke(0)
-  strokeWeight(3)
-  ellipse(posPlayer.x, posPlayer.y, ballSize, ballSize)
-  
-  #non player ellipse
-  global posNon
-  
-  noStroke()
-  fill(0)
-  ellipse(posNon.x, posNon.y, ballSize, ballSize)
-  
-  posNon.add(speed)
-  
-  if posNon.x > width:
-    posNon.x = width
-    speed.x = -speed.x
-  elif posNon.x < 0:
-    posNon.x = 0
-    speed.x = -speed.x
+    global non_pos_1
+    global non_speed_1
+    global player_pos
+    global score
     
-  if posNon.y > height:
-    posNon.y = height
-    speed.y = -speed.y
-  elif posNon.y < 0:
-    posNon.y = 0
-    speed.y = -speed.y
+    background(255)
+    
+    #player sprite
+    player_pos.x = mouseX
+    player_pos.y = mouseY
+    
+    noStroke()
+    fill(216, 252, 98)
+    ellipse(mouseX, mouseY, 50, 50)
+    
+    #non player sprite 1
+    fill(200)
+    ellipse(non_pos_1.x, non_pos_1.y, 50, 50)
+    
+    non_pos.add(non_speed_1)
+  
+    if non_pos_1.x > width:
+        non_pos.x = width
+        non_speed_1.x = -non_speed_1.x
+    elif non_pos.x < 0:
+        non_pos.x = 0
+        non_speed_1.x = -non_speed_1.x
+    
+    if non_pos.y > height:
+        non_pos.y = height
+        non_speed_1.y = -non_speed_1.y
+    elif non_pos.y < 0:
+        non_pos.y = 0
+        non_speed_1.y = -non_speed_1.y
  
- #score
-  textSize(30)
-  text("score:", 20, 40)
-  text(score, 115, 40)
-  fill(0)
-
-
-
-
-
-
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  #score
+    textSize(30)
+    text("score:", 20, 40)
+    text(score, 115, 40)
+    fill(0)
