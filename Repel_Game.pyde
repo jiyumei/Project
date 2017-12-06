@@ -11,13 +11,6 @@ def setup():
 def draw():
   background(255)
   
-  #background
-  beginning = color(5, 5, 99)
-  ending = color(5, 201, 187)
-  for i in range(601):
-    stroke(lerpColor(beginning, ending, i / 650.0))
-    line(0, i, width, i)
-  
   #player ellipse
   global ballSize
   posPlayer = PVector(mouseX, mouseY)
