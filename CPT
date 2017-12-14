@@ -59,7 +59,7 @@ def draw():
     webImg.resize(100, 50)
 
     # player
-    stroke(75) 
+    stroke(75)
     strokeWeight(5)
     noFill()
     ellipse(180, mouseY, ballSize, ballSize)
