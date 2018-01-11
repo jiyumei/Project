@@ -1,24 +1,34 @@
-# shooting game about a treasure lost in space
-# https://www.youtube.com/user/shiffman
-# link used for treasure chest is too long (Pep 8)
-# however it is required so please ignore it. Thank you!!
+# shooting game about treasure lost in space
+# [mission start]
 
 # variables
 score = 0
 playerSize = 40
 playerPos = PVector(180, 0)
 
-missilePos = PVector(200, 200)
-missileSpeed = PVector(10, 0) # (7, 0)
+missilePos = PVector(200, 100)
+missileSpeed = PVector(10, 0)
 
 mobPos = PVector(950, 200)
 mobSize = 50
 mobSpeed = PVector(-5, 0)
 
+miniBossPosA = PVector(800, 350)
+miniBossSizeA = 100
+miniBossSpeedA = PVector(7, 7)
+asteroidPos = PVector(700, 100)
+asteroidSpeed = PVector(-10, 0)
+
 playerHP = 10
 chestHP = 3
-url = "http://clipartix.com/wp-content/uploads/2016/07/Treasure-chest-clipart-clipart.gif"
-webImg = loadImage(url, "gif")
+miniBossHP = 10
+
+urlChest = "https://i.imgur.com/lHwIfhP.gif"
+imgChest = loadImage(urlChest, "gif")
+urlGirl = "https://i.imgur.com/tcSd9mZ.png"
+imgGirl = loadImage(urlGirl, "png")
+urlAsteroid = "https://i.imgur.com/lgju8SY.png"
+imgAsteroid = loadImage(urlAsteroid, "png")
 
 
 def setup():
@@ -35,10 +45,20 @@ def draw():
     global mobPos
     global mobSize
     global mobSpeed
+    global miniBossPosA
+    global miniBossSizeA
+    global miniBossSpeedA
+    global asteroidPos
+    global asteroidSpeed
     global playerHP
     global chestHP
-    global url
-    global webImg
+    global miniBossHP
+    global urlChest
+    global imgChest
+    global urlGirl
+    global imgGirl
+    global urlAsteroid
+    global imgAsteroid
 
     # background
     background(255)
@@ -46,21 +66,23 @@ def draw():
     ending = color(45, 135, 255)
 
     for i in range(801):
-        stroke(lerpColor(beginning, ending, i/600.0))
+        stroke(lerpColor(beginning, ending, i / 600.0))
         line(0, i, width, i)
 
-    # title & score
+    # title, score & tip
     textSize(25)
     fill(255)
     text("Pew Pew!!!", 465, 50)
     text("score:", 845, 50)
     text(score, 930, 50)
+    textSize(20)
+    text("tip! hold down your mouse to activate [game help]", 200, 75)
 
     # health points
     text("Player's HP:     / 10", 760, 90)
     text("Chest's HP:    / 3", 760, 130)
-    text(playerHP, 903, 90)
-    text(chestHP, 903, 130)
+    text(playerHP, 874, 90)
+    text(chestHP, 877, 130)
 
     # stars
     strokeWeight(2)
@@ -81,13 +103,10 @@ def draw():
     point(600, 300)
     point(650, 550)
 
-    # treasure chests, use "Using For Loops to Make Multiple Objects"
-    # image(webImg, 20, 300)
-    # webImg.resize(100, 50)
+    # treasure chests
     for y in range(20, 700, 100):
-        image(webImg, 20, y)
-        webImg.resize(100, 50)
-        # image = rect(20, 300, 100, 50)
+        imgChest.resize(100, 50)
+        image(imgChest, 20, y)
 
     # player
     playerPos.y = mouseY
@@ -103,17 +122,140 @@ def draw():
     if missilePos.x > width:
         missilePos.x = 200
         missilePos.y = mouseY - 10
-        
-    # mobs 
+
+    # mobs
     stroke(146, 255, 48)
     ellipse(mobPos.x, mobPos.y, mobSize, mobSize)
     mobPos.add(mobSpeed)
     if mobPos.x == 0:
         mobPos.x = 950
         mobPos.y = random(100, 500)
-    
-    # missle detection for mobs if hit 
+
+    # missle detection for mobs if hit
     distance = PVector.sub(missilePos, mobPos)
-    if distance.mag() <= mobSize:
+    if distance.mag() <= mobSize/2:
         mobPos.x = 950
         mobPos.y = random(100, 500)
+        missilePos.x = 200
+        score += 1
+    if score >= 1:
+        textSize(30)
+        text("DANGER, DANGER! MINI BOSS HAS APPEARED!", 200, 170)
+
+        # mini boss
+        stroke(222, 0, 62)
+        ellipse(miniBossPosA.x, miniBossPosA.y, miniBossSizeA, miniBossSizeA)
+        mobPos = PVector(1100, 400)
+        mobSpeed = PVector(0, 0)
+        text("Mini Boss's HP:     / 10", 620, 550)
+        text(miniBossHP, 845, 550)
+        textSize(20)
+        text("dodge asteroids & bump into mini boss to deplete hp", 150, 210)
+        text("(chests are invincible)", 675, 210)
+
+        # player adjustments
+        playerPos.x = mouseX
+
+        # mini boss bouncing off walls
+        miniBossPosA.add(miniBossSpeedA)
+        if miniBossPosA.x > width:
+            miniBossPosA.x = width
+            miniBossSpeedA.x = -miniBossSpeedA.x
+        elif miniBossPosA.x < 170:
+            miniBossPosA.x = 170
+            miniBossSpeedA.x = -miniBossSpeedA.x
+
+        if miniBossPosA.y > height:
+            miniBossPosA.y = height
+            miniBossSpeedA.y = -miniBossSpeedA.y
+        elif miniBossPosA.y < 0:
+            miniBossPosA.y = 0
+            miniBossSpeedA.y = -miniBossSpeedA.y
+
+        # asteroids
+        imgAsteroid.resize(60, 60)
+        image(imgAsteroid, asteroidPos.x, asteroidPos.y)
+        asteroidPos.add(asteroidSpeed)
+        if asteroidPos.x < 0:
+            asteroidPos.x = 1000
+            asteroidPos.y = random(30, 570)
+
+        # disable player's missiles
+        missilePos.x = 1100
+        missilePos.y = 800
+        missileSpeed = PVector(0, 0)
+        
+        # asteroid detection for player if hit 
+        distancePlayerAsteroid = PVector.sub(asteroidPos, playerPos)
+        if distancePlayerAsteroid.mag() <= playerSize:
+            asteroidPos.x = 1000
+            asteroidPos.y = random(30, 570)
+            playerHP -= 1
+            
+        if playerHP <= 0:
+            score = 0
+            playerHP = 0
+            chestHP = 0
+            textSize(40)
+            text("GAME OVER~ :C", 350, 300)        
+
+        # mini boss detection if player attacks successfully 
+        # distancePlayerMB1 = PVector.sub(miniBossPosA, playerPos)
+        # if distancePlayerMB1.mag() <= miniBossSizeA/2:
+            # miniBossHP -= 1
+            # add in feature where if player hits, bump away the boss 
+
+    # mob detection for player if hit
+    distanceMobPlayer = PVector.sub(mobPos, playerPos)
+    if distanceMobPlayer.mag() <= playerSize/2:
+        mobPos.x = 950
+        mobPos.y = random(100, 500)
+        playerHP -= 1
+
+    if playerHP <= 0:
+        score = 0
+        playerHP = 0
+        chestHP = 0
+        textSize(40)
+        text("GAME OVER~ :C", 350, 300)
+
+    # mob detection for treasure chest if hit
+    if mobPos.x == 100:
+        chestHP -= 1
+    if chestHP <= 0:
+        textSize(40)
+        text("GAME OVER~ :C", 350, 300)
+        chestHP = 0
+        playerHP = 0
+        score = 0
+
+    # game help
+    if mousePressed is True:
+        beginning = color(1, 5, 32)
+        ending = color(45, 135, 255)
+        for i in range(801):
+            stroke(lerpColor(beginning, ending, i / 600.0))
+            line(0, i, width, i)
+        imgGirl.resize(320, 482)
+        image(imgGirl, 0, 120)
+        mobSpeed = PVector(0, 0)
+        missileSpeed = PVector(0, 0)
+        textSize(20)
+        fill(255)
+        text("""Game Help:
+1. You are the pink ellipse, your missiles are the red rectangles and
+the enemy is the green ellipse
+2. You shoot automatic missiles, move your mouse up or down to
+direct the missiles
+3. Defeat the enemy mobs and protect the treasure chests
+4. There are 3 stages in total:
+stage 1 and 2 - defeat the mob waves and the mini bosses to continue
+With each mini boss, there will be a special mission for the player
+stage 3 - defeat the mob waves and the final boss to continue
+5. If you or the treasure chest gets hit, HP will go down. If HP hits 0,
+its game over!
+6. After clearing 3 stages, you reached the spaceship and cleared the
+game~""", 300, 180)
+    else:
+        mobSpeed = PVector(-5, 0)
+        missileSpeed = PVector(10, 0)
