@@ -1,11 +1,13 @@
 # shooting game about treasure lost in space
 # [mission start]
+# game help and ending images digitally drawn by Fiona
+# please enjoy our game!! 
 
 # variables
 score = 0
+
 playerSize = 40
 playerPos = PVector(180, 0)
-
 missilePos = PVector(200, 100)
 missileSpeed = PVector(10, 0)
 
@@ -14,18 +16,26 @@ mobSize = 50
 mobSpeed = PVector(-5, 0)
 
 miniBossPosA = PVector(800, 350)
+miniBossSpeedA = PVector(0, 0)
 miniBossSizeA = 100
-miniBossSpeedA = PVector(7, 7)
+planetPos = PVector(200, 400)
+planetSpeed = PVector(10, 0)
+planetSize = 80
+
+miniBossPosB = PVector(800, 350)
+miniBossSpeedB = PVector(3, 3)
+miniBossSizeB = 120
 asteroidPos = PVector(700, 100)
 asteroidSpeed = PVector(-10, 0)
 
 playerHP = 10
 chestHP = 3
-miniBossHP = 10
+miniBossHP1 = 10
+miniBossHP2 = 15
 
 urlChest = "https://i.imgur.com/lHwIfhP.gif"
 imgChest = loadImage(urlChest, "gif")
-urlGirl = "https://i.imgur.com/tcSd9mZ.png"
+urlGirl = "https://i.imgur.com/SxPXFBX.png"
 imgGirl = loadImage(urlGirl, "png")
 urlAsteroid = "https://i.imgur.com/lgju8SY.png"
 imgAsteroid = loadImage(urlAsteroid, "png")
@@ -46,13 +56,20 @@ def draw():
     global mobSize
     global mobSpeed
     global miniBossPosA
-    global miniBossSizeA
     global miniBossSpeedA
+    global miniBossSizeA
+    global planetPos
+    global planetSpeed
+    global planetSize
+    global miniBossPosB
+    global miniBossSizeB
+    global miniBossSpeedB
     global asteroidPos
     global asteroidSpeed
     global playerHP
     global chestHP
-    global miniBossHP
+    global miniBossHP1
+    global miniBossHP2
     global urlChest
     global imgChest
     global urlGirl
@@ -138,39 +155,81 @@ def draw():
         mobPos.y = random(100, 500)
         missilePos.x = 200
         score += 1
-    if score >= 1:
-        textSize(30)
-        text("DANGER, DANGER! MINI BOSS HAS APPEARED!", 200, 170)
 
-        # mini boss
-        stroke(222, 0, 62)
-        ellipse(miniBossPosA.x, miniBossPosA.y, miniBossSizeA, miniBossSizeA)
+    # Stage One
+    if score >= 10:
+        textSize(20)
+        text("""DANGER, DANGER! MINI BOSS NO. 1 HAS APPEARED!
+        The mini boss will follow you so be careful!
+        If the mini boss touches you, you lose HP
+        Crash the mini boss into the planet to defeat it
+        (Chests are invincible!)""", 200, 100)
+
+        # player adjustments
+        playerPos = PVector(mouseX, mouseY)
+
+        # disable player's missiles and mobs
+        missilePos = PVector(1100, 800)
+        missileSpeed = PVector(0, 0)
         mobPos = PVector(1100, 400)
         mobSpeed = PVector(0, 0)
+
+        # mini boss no. 1
         text("Mini Boss's HP:     / 10", 620, 550)
-        text(miniBossHP, 845, 550)
+        text(miniBossHP1, 770, 550)
+        stroke(222, 0, 62)
+        ellipse(miniBossPosA.x, miniBossPosA.y, miniBossSizeA, miniBossSizeA)
+
+        # mini boss follows player
+        distanceFollow = PVector.sub(miniBossPosA, playerPos)
+        distanceFollow.mult(-1)
+        miniBossSpeedA = distanceFollow.normalize()
+        miniBossPosA.add(miniBossSpeedA * 3)
+
+        # planet
+        fill(128, 128, 128)
+        noStroke()
+        ellipse(planetPos.x, planetPos.y, planetSize, planetSize)
+
+        # collision detection for planet and mini boss
+        distancePlanetMB = PVector.sub(planetPos, miniBossPosA)
+        if distancePlanetMB.mag() <= miniBossSizeA/2:
+            miniBossHP1 -= 1
+            planetPos.x = random(0, 1000)
+            planetPos.y = random(0, 600)
+
+        # mini boss detection if player attacks successfully
+        distancePlayerMB1 = PVector.sub(playerPos, miniBossPosA)
+        if distancePlayerMB1.mag() <= playerSize/2:
+            playerHP -= 1
+
+        # mini boss is defeat
+        if miniBossHP1 <= 0:
+            miniBossHP1 = 0
+            textSize(30)
+            fill(255)
+            text("MINI BOSS no. 1 IS CLEARED!", 450, 300)
+
+        elif playerHP <= 0:
+            textSize(30)
+            text("GAME OVER...", 600, 300)
+
+    # Stage Two
+    if score >= 25:
+        textSize(30)
+        text("DANGER, DANGER! MINI BOSS NO. 2 HAS APPEARED!", 200, 170)
+
+        # mini boss no. 2
+        stroke(222, 0, 62)
+        ellipse(miniBossPosB.x, miniBossPosB.y, miniBossSizeB, miniBossSizeB)
+        text("Mini Boss's HP:     / 15", 620, 550)
+        text(miniBossHP2, 845, 550)
         textSize(20)
         text("dodge asteroids & bump into mini boss to deplete hp", 150, 210)
         text("(chests are invincible)", 675, 210)
 
         # player adjustments
         playerPos.x = mouseX
-
-        # mini boss bouncing off walls
-        miniBossPosA.add(miniBossSpeedA)
-        if miniBossPosA.x > width:
-            miniBossPosA.x = width
-            miniBossSpeedA.x = -miniBossSpeedA.x
-        elif miniBossPosA.x < 170:
-            miniBossPosA.x = 170
-            miniBossSpeedA.x = -miniBossSpeedA.x
-
-        if miniBossPosA.y > height:
-            miniBossPosA.y = height
-            miniBossSpeedA.y = -miniBossSpeedA.y
-        elif miniBossPosA.y < 0:
-            miniBossPosA.y = 0
-            miniBossSpeedA.y = -miniBossSpeedA.y
 
         # asteroids
         imgAsteroid.resize(60, 60)
@@ -180,30 +239,59 @@ def draw():
             asteroidPos.x = 1000
             asteroidPos.y = random(30, 570)
 
-        # disable player's missiles
-        missilePos.x = 1100
-        missilePos.y = 800
+        # disable player's missiles and mobs
+        missilePos.x = PVector(1100, 800)
         missileSpeed = PVector(0, 0)
-        
-        # asteroid detection for player if hit 
+        mobPos = PVector(1100, 400)
+        mobSpeed = PVector(0, 0)
+
+        # asteroid detection for player if hit
         distancePlayerAsteroid = PVector.sub(asteroidPos, playerPos)
         if distancePlayerAsteroid.mag() <= playerSize:
             asteroidPos.x = 1000
             asteroidPos.y = random(30, 570)
             playerHP -= 1
-            
+
         if playerHP <= 0:
             score = 0
             playerHP = 0
             chestHP = 0
             textSize(40)
-            text("GAME OVER~ :C", 350, 300)        
+            text("GAME OVER~ :C", 350, 300)
 
-        # mini boss detection if player attacks successfully 
-        # distancePlayerMB1 = PVector.sub(miniBossPosA, playerPos)
-        # if distancePlayerMB1.mag() <= miniBossSizeA/2:
-            # miniBossHP -= 1
-            # add in feature where if player hits, bump away the boss 
+        # mini boss detection if player attacks successfully
+        distancePlayerMB2 = PVector.sub(miniBossPosB, playerPos)
+        if distancePlayerMB2.mag() <= miniBossSizeB/2:
+            miniBossHP2 -= 1
+            miniBossPosB.x = random(0, 1000)
+            miniBossPosB.y = random(0, 600)
+
+        elif miniBossHP2 <= 0:
+            miniBossHP2 = 0
+
+        # range detection and repel
+        radius = miniBossSizeB/2
+        distanceRepel = PVector.sub(miniBossPosB, playerPos)
+        if distanceRepel.mag() <= radius * 2:
+            direction = distanceRepel.heading()
+            repel = miniBossPosB.fromAngle(direction)
+            miniBossSpeedB.add(repel)
+
+        # mini boss bouncing off walls
+        miniBossPosB.add(miniBossSpeedB)
+        if miniBossPosB.x > width:
+            miniBossPosB.x = width
+            miniBossSpeedB.x = -miniBossSpeedB.x
+        elif miniBossPosB.x < 170:
+            miniBossPosB.x = 170
+            miniBossSpeedB.x = -miniBossSpeedB.x
+
+        if miniBossPosB.y > height:
+            miniBossPosB.y = height
+            miniBossSpeedB.y = -miniBossSpeedB.y
+        elif miniBossPosB.y < 0:
+            miniBossPosB.y = 0
+            miniBossSpeedB.y = -miniBossSpeedB.y
 
     # mob detection for player if hit
     distanceMobPlayer = PVector.sub(mobPos, playerPos)
