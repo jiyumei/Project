@@ -1,6 +1,6 @@
 # shooting game about treasure lost in space
 # [mission start]
-# game help and ending images digitally drawn by Fiona
+# game help, planet & ending images digitally drawn by Fiona
 # please enjoy our game!! 
 
 # variables
@@ -20,7 +20,6 @@ miniBossSpeedA = PVector(0, 0)
 miniBossSizeA = 100
 planetPos = PVector(200, 400)
 planetSpeed = PVector(10, 0)
-planetSize = 80
 
 miniBossPosB = PVector(800, 350)
 miniBossSpeedB = PVector(3, 3)
@@ -39,6 +38,8 @@ urlGirl = "https://i.imgur.com/SxPXFBX.png"
 imgGirl = loadImage(urlGirl, "png")
 urlAsteroid = "https://i.imgur.com/lgju8SY.png"
 imgAsteroid = loadImage(urlAsteroid, "png")
+urlPlanet = "https://i.imgur.com/PwoqdLl.png"
+imgPlanet = loadImage(urlPlanet, "png") 
 
 
 def setup():
@@ -76,6 +77,8 @@ def draw():
     global imgGirl
     global urlAsteroid
     global imgAsteroid
+    global urlPlanet
+    global imgPlanet
 
     # background
     background(255)
@@ -157,7 +160,7 @@ def draw():
         score += 1
 
     # Stage One
-    if score >= 10:
+    if score >= 1:
         textSize(20)
         text("""DANGER, DANGER! MINI BOSS NO. 1 HAS APPEARED!
         The mini boss will follow you so be careful!
@@ -187,9 +190,8 @@ def draw():
         miniBossPosA.add(miniBossSpeedA * 3)
 
         # planet
-        fill(128, 128, 128)
-        noStroke()
-        ellipse(planetPos.x, planetPos.y, planetSize, planetSize)
+        imgPlanet.resize(210, 290)
+        image(imgPlanet, planetPos.x, planetPos.y)
 
         # collision detection for planet and mini boss
         distancePlanetMB = PVector.sub(planetPos, miniBossPosA)
